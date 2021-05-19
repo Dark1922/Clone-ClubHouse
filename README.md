@@ -20,25 +20,25 @@ Marque esse projeto com uma estrela 🌟
 
 ## Checklist Features
 
-- [ ] O app deve funcionar na Web, Android e IOS
+- [x ] O app deve funcionar na Web, Android e IOS
 - Login
-  - [ ] Deve ter login com GitHub
-    - [ ] Se houver dados do usuario em localStorage deve ir para lobby direto
+  - [ x] Deve ter login com GitHub
+    - [x ] Se houver dados do usuario em localStorage deve ir para lobby direto
 
 - Lobby
-  - [ ] Se não houver dados do usuario em localStorage deve voltar para login
-  - [ ] Mostra todas as salas ativas
-  - [ ] Atualiza salas em realtime
-  - [ ] Pode criar uma sala sem topico
-  - [ ] Pode criar uma sala com topico
-  - [ ] Pode acessar salas ativas
+  - [x ] Se não houver dados do usuario em localStorage deve voltar para login
+  - [ x] Mostra todas as salas ativas
+  - [ x] Atualiza salas em realtime
+  - [ x] Pode criar uma sala sem topico
+  - [ x] Pode criar uma sala com topico
+  - [ x] Pode acessar salas ativas
 - Room
-  - [ ] Se não houver dados do usuario em localStorage deve voltar para login
-  - [ ] Cria uma sala com um usuário dono
-  - [ ] Todos usuários futuros entram com perfil de attendees
-  - [ ] Notifica Lobby sobre atualizações na sala
-  - [ ] Lista usuarios com perfis de speakers e attendees
-  - [ ] Se o dono da sala desconectar, será removida
+  - [ x] Se não houver dados do usuario em localStorage deve voltar para login
+  - [ x] Cria uma sala com um usuário dono
+  - [ x] Todos usuários futuros entram com perfil de attendees
+  - [x ] Notifica Lobby sobre atualizações na sala
+  - [x ] Lista usuarios com perfis de speakers e attendees
+  - [x ] Se o dono da sala desconectar, será removida
   - Users
     - Speaker
       - [ ] Recebe notificação de attendees para se tornarem speakers
