@@ -2,15 +2,26 @@ import RoomsController from "./controllers/roomsController.js";
 import SocketServer from "./util/socket.js";
 import Event from 'events'
 import { constants } from './util/constants.js'
+import LobbyController from "./controllers/lobbyController.js";
 
 const port = process.env.PORT || 3000
 const socketServer = new SocketServer({ port })
 const server = await socketServer.start()
 
-const roomsController = new RoomsController()
+
+const roomsPubSub = new Event()
+
+const roomsController = new RoomsController({
+    roomsPubSub
+})
+const lobbyController = new LobbyController({
+    activeRooms: roomsController.rooms,
+    roomsListener: roomsPubSub
+})
 
 const namespaces = {
-    room: { controller: roomsController, eventEmitter: new Event() }
+    room: { controller: roomsController, eventEmitter: new Event() },
+    lobby: { controller: lobbyController, eventEmitter: roomsPubSub },
 }
 
 // namespaces.room.eventEmitter.on(

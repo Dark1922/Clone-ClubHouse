@@ -5,6 +5,9 @@ const imgUser = document.getElementById('imgUser')
 const roomTopic = document.getElementById('pTopic')
 const gridAttendees = document.getElementById('gridAttendees')
 const gridSpeakers = document.getElementById('gridSpeakers')
+const btnMicrophone = document.getElementById('btnMicrophone')
+const btnClipBoard = document.getElementById('btnClipBoard')
+const btnClap = document.getElementById('btnClap')
 
 export default class View {
     static updateUserImage({ img, username }) {
@@ -44,12 +47,51 @@ export default class View {
         }
 
         const existingItem = View._getExistingItemOnGrid({ id, baseElement })
-        if(existingItem) {
+        if (existingItem) {
             existingItem.innerHTML = htmlTemplate;
             return;
         }
 
         baseElement.innerHTML += htmlTemplate
 
+    }
+
+    static _createAudioElement({ muted = true, srcObject }) {
+        const audio = document.createElement('audio')
+        audio.muted = muted
+        audio.srcObject = srcObject
+
+        audio.addEventListener('loadedmetadata', async () => {
+            try {
+                await audio.play()
+            } catch (error) {
+                console.error('erro to play', error)
+            }
+        })
+ 
+    }
+
+    
+
+    static renderAudioElement({ callerId, stream, isCurrentId }) {
+        View._createAudioElement({ 
+            muted: isCurrentId,
+            srcObject: stream
+        }) 
+
+    }
+    static showUserFeatures(isSpeaker) {
+
+        // attendee
+        if (!isSpeaker) {
+            btnClap.classList.remove('hidden')
+            btnMicrophone.classList.add('hidden')
+            btnClipBoard.classList.add('hidden')
+            return;
+        }
+        // speaker
+        btnClap.classList.add('hidden')
+        btnMicrophone.classList.remove('hidden')
+        btnClipBoard.classList.remove('hidden')
     }
 }
