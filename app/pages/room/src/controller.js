@@ -25,8 +25,23 @@ export default class RoomController {
     }
 
     _setupViewEvents() {
+        this.view.configureOnMicrophoneActivation(this.onMicrophoneActivation())
+        this.view.configureLeaveButton()
+        this.view.configureClapButton(this.onClapPressed())
         this.view.updateUserImage(this.roomInfo.user)
         this.view.updateRoomTopic(this.roomInfo.room)
+    }
+
+    onMicrophoneActivation() {
+        return async () => {
+            await this.roomService.toggleAudioActivation()
+         }
+    }
+
+    onClapPressed() {
+        return () => {
+            this.socket.emit(constants.events.SPEAK_REQUEST, this.roomInfo.user)
+        }
     }
 
     _setupSocket() {
@@ -35,8 +50,17 @@ export default class RoomController {
             .setOnUserDisconnected(this.onDisconnected())
             .setOnRoomUpdated(this.onRoomUpdated())
             .setOnUserProfileUpgrade(this.onUserProfileUgrade())
+            .setOnSpeakRequested(this.onSpeakRequested())
             .build()
     }
+    onSpeakRequested() {
+        return (data) => { 
+            const user = new Attendee(data)
+            const result = prompt(`${user.username} pediu para falar!, aceitar? 1 sim, 0 não`)
+            this.socket.emit(constants.events.SPEAK_ANSWER, { answer: !!Number(result), user })
+        }
+    }
+
     async _setupWebRTC() {
         return this.peerBuilder
             .setOnError(this.onPeerError())
@@ -53,6 +77,7 @@ export default class RoomController {
             const callerId = call.peer
             console.log('onStreamReceived', call, stream)
             const { isCurrentId } = this.roomService.addReceivedPeer(call)
+            // console.warn('audio desabilitado')
             this.view.renderAudioElement({
                 callerId,
                 stream,
@@ -105,9 +130,9 @@ export default class RoomController {
         return (data) => {
             const attendee = new Attendee(data)
             console.log('onUserProfileUgrade', attendee)
-            this.roomService.upgradeUserPermission(attendee)
-
+            
             if (attendee.isSpeaker) {
+                this.roomService.upgradeUserPermission(attendee)
                 this.view.addAttendeeOnGrid(attendee, true)
             }
 
@@ -133,7 +158,7 @@ export default class RoomController {
 
             console.log(`${attendee.username} disconnected!`)
             this.view.removeItemFromGrid(attendee.id)
-            
+
             this.roomService.disconnectPeer(attendee)
         }
     }
